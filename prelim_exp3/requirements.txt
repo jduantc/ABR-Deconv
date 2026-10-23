@@ -1,0 +1,9 @@
+numpy
+mne>=1.7,<2
+scipy
+pandas
+matplotlib
+h5py
+h5io
+requests
+tqdm
