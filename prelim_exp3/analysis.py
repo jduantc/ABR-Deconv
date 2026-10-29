@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import mne 
 import os
-from h5io import read_hdf5
+from expyfun.io import read_hdf5
 
 from scipy.fftpack import fft, ifft
 from scipy.signal import sosfilt, sosfilt_zi, butter, lfilter, iirnotch
