@@ -79,54 +79,67 @@ def deconv(c, cf, y):
 
     return x_isol, x_combined
 
-def deconv_wiener(c, cf, y):
-    n = mne.filter.next_fast_len(c.shape[-1]) # calculate fast fourier length using time dimension size
+def deconv_wiener(c, cf, y, alpha):
+    """
+    Original deconvolution estimator with Wiener quadratic regularization.
+
+    Assumed noise-to-response power ratio:
+        S_n(theta) / S_h(theta) = alpha * theta**2
+
+    theta is angular frequency in radians/sample.
+    alpha >= 0 controls regularization; alpha=0 recovers deconv()
+    wherever the original denominators are nonzero.
+
+    Returns the same shapes and units as deconv().
+    """
+    if not np.isfinite(alpha) or alpha < 0:
+        raise ValueError("alpha must be finite and nonnegative.")
+
+    n = mne.filter.next_fast_len(c.shape[-1])
+
     c_f = fft(c, n=n)
     cf_f = fft(cf, n=n)
     y_f = fft(y, n=n)
-    y_f[..., 0] = 0 # removes constant (fft coef 0), convention for eeg inference
+    y_f[..., 0] = 0
 
-    tr_weights = 1./np.var(y, axis=-1, keepdims=True) # inverse variance weighting across trials
-    tr_weights = tr_weights / np.sum(tr_weights, axis=0, keepdims=True)
+    tr_weights = 1. / np.var(y, axis=-1, keepdims=True)
+    tr_weights /= tr_weights.sum(axis=0, keepdims=True)
 
-    # estimate omega
-    frequency_hz = np.fft.fftfreq(n, d=1.0 / eeg_freq)
-    omega = 2.0 * np.abs(frequency_hz) / eeg_freq
-    alpha = 50
+    # Signed angular frequency of each FFT bin, in radians/sample.
+    theta = 2.0 * np.pi * np.fft.fftfreq(n)
+    reg = alpha * theta**2
 
-    # deconvolution as written in preliminary paper
-    # shape (E, B, C, n) 
+    # Same numerators and power averaging as the original estimator.
     numerator = (np.conj(c_f) * y_f * tr_weights).sum(axis=0)
-    denominator = (np.abs(c_f) ** 2).mean(axis=(0, 1, 2), keepdims=True)[0]
-    
-    power_scale = np.median(denominator[denominator > 0])
-    reg = alpha * power_scale * omega**2
+    denominator = (
+        c_f * np.conj(c_f)
+    ).mean(axis=(0, 1, 2), keepdims=True)[0]
 
-    m = ifft(numerator / (denominator + reg))
-
-    # shape (1, F, C, n)
     numerator_c = (np.conj(cf_f) * y_f * tr_weights).sum(axis=0)
-    denominator_c = (np.abs(cf_f) ** 2).mean(axis=(0, 1, 2), keepdims=True)[0]
+    denominator_c = (
+        cf_f * np.conj(cf_f)
+    ).mean(axis=(0, 1, 2), keepdims=True)[0]
 
-    power_scale_c = np.median(denominator_c[denominator_c > 0])
-    reg_c = alpha * power_scale_c * omega**2
+    # Regularize each Fourier bin.
+    m = numerator / (denominator + reg)
+    mf = numerator_c / (denominator_c + reg)
 
-    mf = ifft(numerator_c / (denominator_c + reg_c))
-
+    # Exactly one inverse FFT per estimate.
     x_bands = 1e6 * ifft(m).real
     x_fake = 1e6 * ifft(mf).real
 
-    # align properly after the division -> inv fft step, also avg over elec. derivations
-    # resultant shape: (E, B, n_pre + n_post)
-    x_bands = np.concatenate((x_bands[..., -n_pre:], x_bands[..., :n_post]), -1).mean(2)
-    # shape: (1, F, n_pre + n_post)
-    x_fake = np.concatenate((x_fake[..., -n_pre:], x_fake[..., :n_post]), -1).mean(2)
-    # shape: (1, 1, n_pre + n_post)
+    x_bands = np.concatenate(
+        (x_bands[..., -n_pre:], x_bands[..., :n_post]), axis=-1
+    ).mean(2)
+
+    x_fake = np.concatenate(
+        (x_fake[..., -n_pre:], x_fake[..., :n_post]), axis=-1
+    ).mean(2)
+
     common_comp = x_fake.mean(1, keepdims=True)
 
-    x_isol = x_bands - common_comp # per-band, without common comp. shape (E, B, n_pre + n_post)
-    # overall, aggreagted speech response
-    x_combined = x_isol.sum(1) + common_comp[:, 0, :] # shape (E, n_pre + n_post)
+    x_isol = x_bands - common_comp
+    x_combined = x_isol.sum(1) + common_comp[:, 0, :]
 
     return x_isol, x_combined
 
