@@ -1,0 +1,18 @@
+sub-exp301, wizard: short recordings vs the paper method's 35-min response, mean over 10 regressors (5 bands x 2 ears), 0-15 ms, after the 150 Hz highpass
+
+                      5min      10min      20min
+corr paper           0.555      0.831      0.906
+corr gauss           0.769      0.816      0.880
+corr diffusion       0.764      0.812      0.874
+rmse paper          0.0129     0.0064     0.0045
+rmse gauss          0.0066     0.0057     0.0048
+rmse diffusion      0.0071     0.0062     0.0053
+
+per-band correlation at 5 min (left | right):
+ 0.5 kHz   paper: +0.48|+0.68  gauss: +0.58|+0.64  diffusion: +0.79|+0.45
+ 1.0 kHz   paper: +0.30|+0.35  gauss: +0.47|+0.79  diffusion: +0.59|+0.69
+ 2.0 kHz   paper: +0.62|+0.62  gauss: +0.84|+0.91  diffusion: +0.83|+0.83
+ 4.0 kHz   paper: +0.53|+0.52  gauss: +0.86|+0.92  diffusion: +0.83|+0.93
+ 8.0 kHz   paper: +0.76|+0.70  gauss: +0.78|+0.89  diffusion: +0.79|+0.90
+
+reference wave V (lag ms, amp uV), left ear: 0.5k (4.1, 0.018), 1k (4.3, 0.001), 2k (7.5, 0.018), 4k (4.1, 0.012), 8k (4.1, 0.015)

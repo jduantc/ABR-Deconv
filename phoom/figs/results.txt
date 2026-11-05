@@ -1,0 +1,35 @@
+noise 12.0 uV RMS, 6 seeds, mean over seeds
+
+
+RMSE (uV)
+                                 1min       2min       5min      10min      20min
+paper LS                        0.497      0.343      0.196      0.132      0.127
+Tikhonov (oracle lam)           0.112      0.108      0.087      0.076      0.068
+Gaussian MAP / Wiener           0.057      0.051      0.045      0.034      0.031
+diffusion (post. mean)          0.044      0.038      0.032      0.024      0.026
+
+corr
+                                 1min       2min       5min      10min      20min
+paper LS                        0.251      0.363      0.536      0.640      0.641
+Tikhonov (oracle lam)           0.216      0.316      0.509      0.594      0.731
+Gaussian MAP / Wiener           0.909      0.909      0.927      0.945      0.958
+diffusion (post. mean)          0.929      0.946      0.952      0.965      0.971
+
+|wave V latency err| (ms)
+                                 1min       2min       5min      10min      20min
+paper LS                        1.667      1.350      1.517      1.150      0.650
+Tikhonov (oracle lam)           1.533      0.883      0.667      0.133      0.117
+Gaussian MAP / Wiener           0.083      0.100      0.050      0.000      0.033
+diffusion (post. mean)          0.117      0.100      0.033      0.033      0.033
+
+wave V amp err (uV)
+                                 1min       2min       5min      10min      20min
+paper LS                       -0.127     -0.107     -0.061     -0.015     -0.053
+Tikhonov (oracle lam)          -0.226     -0.168     -0.116     -0.118     -0.088
+Gaussian MAP / Wiener          -0.123     -0.090     -0.032     -0.023     -0.015
+diffusion (post. mean)         -0.068     -0.048      0.003      0.003      0.000
+
+fraction of lags where the truth is inside the +-2 sd band (should be ~0.95)
+                                 1min       2min       5min      10min      20min
+diffusion samples               0.831      0.855      0.812      0.874      0.842
+Gaussian posterior              0.958      0.955      0.958      0.962      0.946

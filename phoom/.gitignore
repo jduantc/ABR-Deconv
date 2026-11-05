@@ -1,0 +1,6 @@
+__pycache__/
+data
+refs/
+figs/*.png
+*.pt
+*.mp3
