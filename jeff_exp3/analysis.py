@@ -79,7 +79,7 @@ def deconv(c, cf, y):
 
     return x_isol, x_combined
 
-def deconv_wiener(c, cf, y, alpha):
+def deconv_wiener(c, cf, y, alpha, snr_exp=2):
     """
     Original deconvolution estimator with Wiener quadratic regularization.
 
@@ -107,7 +107,7 @@ def deconv_wiener(c, cf, y, alpha):
 
     # Signed angular frequency of each FFT bin, in radians/sample.
     theta = 2.0 * np.pi * np.fft.fftfreq(n)
-    reg = alpha * theta**2
+    reg = alpha * theta**(snr_exp)
 
     # Same numerators and power averaging as the original estimator.
     numerator = (np.conj(c_f) * y_f * tr_weights).sum(axis=0)
@@ -322,7 +322,7 @@ def extract_epochs(eeg, trials, fs_eeg, stim_dur=10.0,
 
     return epochs, retained_trials
 
-def build_pulse_trains(trials, stim_path, fs_eeg, clock_adjust, fs_stim = 48e3, 
+def build_pulse_trains(trials, stim_path, fs_eeg, clock_adjustz, fs_stim = 48e3, 
                        stim_dur = 10.0, pre_seconds=1.0, post_seconds=1.0, n_ears=2, 
                        n_bands=5, true_key="pulseinds_true", fake_key="pulseinds_fake"):
     if not np.isfinite(clock_adjust) or clock_adjust <= 0:
