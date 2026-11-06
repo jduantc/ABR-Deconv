@@ -322,7 +322,7 @@ def extract_epochs(eeg, trials, fs_eeg, stim_dur=10.0,
 
     return epochs, retained_trials
 
-def build_pulse_trains(trials, stim_path, fs_eeg, clock_adjustz, fs_stim = 48e3, 
+def build_pulse_trains(trials, stim_path, fs_eeg, clock_adjust, fs_stim = 48e3, 
                        stim_dur = 10.0, pre_seconds=1.0, post_seconds=1.0, n_ears=2, 
                        n_bands=5, true_key="pulseinds_true", fake_key="pulseinds_fake"):
     if not np.isfinite(clock_adjust) or clock_adjust <= 0:
