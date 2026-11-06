@@ -107,7 +107,7 @@ def deconv_wiener(c, cf, y, alpha, snr_exp=2):
 
     # Signed angular frequency of each FFT bin, in radians/sample.
     theta = 2.0 * np.pi * np.fft.fftfreq(n)
-    reg = alpha * theta**(snr_exp)
+    reg = alpha * np.abs(theta)**(snr_exp)
 
     # Same numerators and power averaging as the original estimator.
     numerator = (np.conj(c_f) * y_f * tr_weights).sum(axis=0)
