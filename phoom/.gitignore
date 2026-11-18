@@ -1,6 +1,7 @@
 __pycache__/
-data
 refs/
+runs/
+wandb/
 figs/*.png
 *.pt
 *.mp3
