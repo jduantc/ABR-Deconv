@@ -1,0 +1,37 @@
+{
+  "legacy_white": {
+    "guidance": 6.25,
+    "validation_rmse_uv": 0.0035905085513344122,
+    "boundary": false
+  },
+  "regular_matched_white": {
+    "guidance": 3.0,
+    "validation_rmse_uv": 0.01808862364374701,
+    "boundary": false
+  },
+  "real_matched_white": {
+    "guidance": 3.0,
+    "validation_rmse_uv": 0.01719482839078848,
+    "boundary": false
+  },
+  "real_quiet_half": {
+    "guidance": 0.0,
+    "validation_rmse_uv": 0.01909742950044654,
+    "boundary": true
+  },
+  "real_quiet_native": {
+    "guidance": 0.0,
+    "validation_rmse_uv": 0.01909742950044654,
+    "boundary": true
+  },
+  "real_quiet_double": {
+    "guidance": 0.0,
+    "validation_rmse_uv": 0.01909742950044654,
+    "boundary": true
+  },
+  "real_quiet_varying": {
+    "guidance": 0.0,
+    "validation_rmse_uv": 0.01909742950044654,
+    "boundary": true
+  }
+}

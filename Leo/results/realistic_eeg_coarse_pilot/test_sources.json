@@ -1,0 +1,129 @@
+{
+  "clock_adjust": 0.9999906978210423,
+  "stimulus_file": "/mnt/sde2/cs163/data/ds008065/stimuli/exp3_f0s2/wizard/wizard_shifted_0001.hdf5",
+  "stimulus_sha256": "7e4a0cee755ed94853d7d7b59fbc435756d23a3e426998a8c9152999ee798b53",
+  "regressor_index": 6,
+  "regressor": "4 kHz left",
+  "window_offset_s": 1.0,
+  "real_pulse_count": 23,
+  "regular_pulse_count": 45,
+  "real_interpulse_ms": [
+    12.8,
+    12.5,
+    12.5,
+    12.3,
+    12.200000000000001,
+    12.200000000000001,
+    12.200000000000001,
+    12.1,
+    12.1,
+    12.1,
+    12.200000000000001,
+    12.3,
+    12.5,
+    12.9,
+    13.0,
+    13.5,
+    13.799999999999999,
+    14.200000000000001,
+    14.6,
+    15.0,
+    15.299999999999999,
+    15.7
+  ],
+  "first_playback_sample": 151060,
+  "active_sample": 363302,
+  "subject": "sub-exp301",
+  "header": "/mnt/sde2/cs163/data/ds008065/sub-exp301/eeg/sub-exp301_task-f0s2_run-01_eeg.vhdr",
+  "quiet_windows": [
+    {
+      "record": 0,
+      "start_sample": 25000,
+      "end_sample": 30000,
+      "rms_uv": 2.4265805189761624,
+      "no_annotated_stimulus": true
+    },
+    {
+      "record": 1,
+      "start_sample": 30000,
+      "end_sample": 35000,
+      "rms_uv": 3.1396765879673048,
+      "no_annotated_stimulus": true
+    },
+    {
+      "record": 2,
+      "start_sample": 35000,
+      "end_sample": 40000,
+      "rms_uv": 2.6004509476529907,
+      "no_annotated_stimulus": true
+    },
+    {
+      "record": 3,
+      "start_sample": 40000,
+      "end_sample": 45000,
+      "rms_uv": 3.1319379709339352,
+      "no_annotated_stimulus": true
+    },
+    {
+      "record": 4,
+      "start_sample": 45000,
+      "end_sample": 50000,
+      "rms_uv": 3.0373407060530577,
+      "no_annotated_stimulus": true
+    },
+    {
+      "record": 5,
+      "start_sample": 50000,
+      "end_sample": 55000,
+      "rms_uv": 2.8276772176731355,
+      "no_annotated_stimulus": true
+    },
+    {
+      "record": 6,
+      "start_sample": 55000,
+      "end_sample": 60000,
+      "rms_uv": 2.4314997231187956,
+      "no_annotated_stimulus": true
+    },
+    {
+      "record": 7,
+      "start_sample": 60000,
+      "end_sample": 65000,
+      "rms_uv": 2.7699302552049248,
+      "no_annotated_stimulus": true
+    },
+    {
+      "record": 8,
+      "start_sample": 65000,
+      "end_sample": 70000,
+      "rms_uv": 2.746422291039513,
+      "no_annotated_stimulus": true
+    },
+    {
+      "record": 9,
+      "start_sample": 70000,
+      "end_sample": 75000,
+      "rms_uv": 2.621131841388264,
+      "no_annotated_stimulus": true
+    },
+    {
+      "record": 10,
+      "start_sample": 75000,
+      "end_sample": 80000,
+      "rms_uv": 3.1090481819067723,
+      "no_annotated_stimulus": true
+    },
+    {
+      "record": 11,
+      "start_sample": 80000,
+      "end_sample": 85000,
+      "rms_uv": 3.052158610950537,
+      "no_annotated_stimulus": true
+    }
+  ],
+  "gain_correction": 100,
+  "channel": "mean(FCzA1, FCz-A2)",
+  "target_units": "microvolts; synthetic ABR amplitudes multiplied by 0.1 as existing generator",
+  "filter": "causal first-order Butterworth 30\u20132000 Hz; 60 Hz odd-harmonic notches, width 5 Hz",
+  "note": "Quiet means before the first annotated playback, not independently acoustically verified silence. Single target band; other evoked bands omitted."
+}

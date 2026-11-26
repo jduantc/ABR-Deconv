@@ -1,0 +1,19 @@
+{
+  "provenance": "Read-only Forge API summaries observed in this session before the experiments. A later direct refresh returned not-found; retain as historical reference only, not a paired comparison. No checkpoint weights were available.",
+  "kitfmkat": {
+    "name": "mlp 10M steps",
+    "final_rmse_uv": {
+      "0.05": 0.0011435932785406552,
+      "0.2": 0.003461607697611927,
+      "0.5": 0.007024343565404633
+    }
+  },
+  "yby90imc": {
+    "name": "unet 1M steps",
+    "final_rmse_uv": {
+      "0.05": 0.0018438158452599735,
+      "0.2": 0.002888219794291871,
+      "0.5": 0.005932498703775043
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "checkpoint": "/home/leki/Caltech/Year 4/CS163/ABR-Deconv-publish/Leo/runs/phoom_matched_10m/step_2000000_ema_0.005.pt",
+  "checkpoint_sha256": "5013f699136551dbd77c073c3e24b423af55f5afd903a62b401727de72a4f6e8",
+  "model_updates": 2000000,
+  "ema_rate": 0.005,
+  "scale_uv": 0.019724719138286887,
+  "validation_subject": "sub-exp302",
+  "test_subject": "sub-exp304",
+  "validation_count": 8,
+  "test_count": 10,
+  "validation_draws": 4,
+  "test_draws": 16,
+  "guidance_grid": [
+    0.0,
+    0.1,
+    0.3,
+    1.0,
+    3.0,
+    6.25,
+    10.0,
+    30.0
+  ],
+  "validation_sampling_seed": 881,
+  "test_sampling_seed": 991,
+  "validation_wave_seed": 97501,
+  "test_wave_seed": 97512,
+  "conditions": [
+    "legacy_white",
+    "regular_matched_white",
+    "real_matched_white",
+    "real_quiet_half",
+    "real_quiet_native",
+    "real_quiet_double",
+    "real_quiet_varying"
+  ],
+  "loss": "EEG residual RMS in model units, no noise-SD normalization",
+  "new_training": false,
+  "target": "one synthetic ABR, 4 kHz left stimulus train; final case is a null ABR",
+  "unit_note": "microvolts; header resolution and original-author /100 preamp correction. No plot RMS normalization in amplitude figures.",
+  "quiet_note": "pre-first-annotated-playback EEG; no independent acoustic verification",
+  "selection": "select guidance separately for each known simulation condition using validation subject only; test subject untouched until freeze"
+}

@@ -1,0 +1,12 @@
+{
+  "torch": "2.6.0+cu124",
+  "numpy": "2.5.5",
+  "scipy": "1.18.1",
+  "matplotlib": "3.11.2",
+  "wfdb": "4.3.1",
+  "wandb": "0.31.0",
+  "python": "3.12.3",
+  "platform": "Linux-6.17.9-76061709-generic-x86_64-with-glibc2.39",
+  "gpu": "NVIDIA GeForce GTX 1080",
+  "cuda": "12.4"
+}

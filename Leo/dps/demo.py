@@ -32,12 +32,20 @@ def main():
 
     # Now see if we can get the ABR back from the noisy EEG.
     model = load_model(args.checkpoint)
-    estimate = reconstruct(model, eeg, pulses, noise_std, args.guidance)
+    estimate = reconstruct(model, eeg, pulses, guidance=args.guidance)
     rmse = np.sqrt(np.mean((estimate - truth) ** 2)) * AMPLITUDE_SCALE_UV
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(args.output, truth=truth, estimate=estimate, eeg=eeg,
-                        pulses=pulses, time_ms=TIME_MS, noise_std=noise_std,
-                        amplitude_scale_uv=AMPLITUDE_SCALE_UV, guidance=args.guidance)
+    np.savez_compressed(
+        args.output,
+        truth=truth,
+        estimate=estimate,
+        eeg=eeg,
+        pulses=pulses,
+        time_ms=TIME_MS,
+        noise_std=noise_std,
+        amplitude_scale_uv=AMPLITUDE_SCALE_UV,
+        guidance=args.guidance,
+    )
     print(f"ABR RMSE: {rmse:.5f} microvolts")
     print(f"Saved arrays to {args.output}")
 

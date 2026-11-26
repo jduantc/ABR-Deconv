@@ -1,0 +1,37 @@
+{
+  "checkpoint": "/home/leki/Caltech/Year 4/CS163/ABR-Deconv-publish/Leo/runs/phoom_matched_10m/step_1000000_ema_0.005.pt",
+  "checkpoint_sha256": "78525e296249c5f18775a510f0ab262f1ab0ccdf33aa45bead837747d3f881a5",
+  "model_updates": 1000000,
+  "ema_rate": 0.005,
+  "scale_uv": 0.019724719138286887,
+  "coarse_grid": [
+    0.0,
+    0.1,
+    0.3,
+    1.0,
+    2.0,
+    3.0,
+    4.0,
+    6.0,
+    10.0,
+    20.0
+  ],
+  "validation_waveform_seed": 93231,
+  "validation_noise_seed": 700001,
+  "test_waveform_seed": 93232,
+  "test_noise_seed": 700201,
+  "validation_count": 32,
+  "test_count": 32,
+  "validation_samples": 8,
+  "test_samples": 32,
+  "sampling_seed": 7193,
+  "noise_uv": [
+    0.05,
+    0.2,
+    0.5
+  ],
+  "device": "cuda",
+  "selection": "single global guidance minimizing mean validation per-waveform RMSE across all 3 noise levels",
+  "loss": "RMS of EEG residual in model units; no noise standard deviation normalization",
+  "sampler_max_abs_difference_cpu": 2.086162567138672e-07
+}

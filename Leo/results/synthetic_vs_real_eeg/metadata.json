@@ -1,0 +1,27 @@
+{
+  "dataset": "OpenNeuro ds008065",
+  "subject": "sub-exp301",
+  "run": 1,
+  "story": "wizard",
+  "real_source": "/mnt/sde2/cs163/data/ds008065/sub-exp301/eeg/sub-exp301_task-f0s2_run-01_eeg.vhdr",
+  "event_sample_corrected": 353302,
+  "display_start_sample": 363302,
+  "display_start_s": 36.3302,
+  "display_duration_s": 0.5,
+  "real_channel": "mean(FCzA1, FCz-A2)",
+  "gain_correction": 100,
+  "scaling_note": "BrainVision resolution in microvolts divided by external preamp gain 100, following repository pipeline",
+  "synthetic_waveform_seed": 96401,
+  "synthetic_noise_seed": 812001,
+  "synthetic_noise_sd_uv": 0.2,
+  "synthetic_pulses": "20\u2013460 ms, every 10 ms, unit amplitude",
+  "original_rms_uv": {
+    "synthetic": 0.20166742430416976,
+    "recorded": 7.983145638238515
+  },
+  "original_acf_1ms": {
+    "synthetic": 0.01515927420817444,
+    "recorded": 0.9621484000406622
+  },
+  "limitations": "One prespecified example, not a population summary. Real trace contains auditory responses plus background and artifacts. Its clean ABR and SNR are unknown. Hardware and preprocessing differences contribute to the comparison; no reconstruction accuracy is inferred."
+}

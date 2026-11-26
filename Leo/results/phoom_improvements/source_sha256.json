@@ -1,0 +1,8 @@
+{
+  "phoom/../Leo/experiments/phoom_improvements.py": "27d01b5e59d4d4117bc789e4d1f5730fb17ec8f7040fd62b59fccf22f4d1b791",
+  "phoom/diffusion/dps.py": "105f63f949d50b0cebf7c52b397b86c0d5e9cecf7e3af709ec8437b3869c9fd4",
+  "phoom/diffusion/train.py": "08dd3700b0881ea0690b77486b8ba02de25955be62d6d777468358b65f9a5008",
+  "phoom/data/synthetic.py": "626f00b141492a1affb6b183c238aca6294532862940f8edb8832e14d1f0425a",
+  "phoom/models/cnn.py": "f50af3dcbf591ef9ef815675c35d966dec91b567e8654cc6c878028e2ac0cdf4",
+  "Leo/experiments/fast_conv.py": "db1e967ab4391fd0abf558d089e0ee8c823472f8a523a8de2448d9968036edae"
+}

@@ -1,0 +1,42 @@
+{
+  "mlp": {
+    "real_quiet_half": {
+      "model": "mlp",
+      "condition": "real_quiet_half",
+      "guidance": 0.3,
+      "rmse_uv": 0.015099015976758789
+    },
+    "real_quiet_native": {
+      "model": "mlp",
+      "condition": "real_quiet_native",
+      "guidance": 0.1,
+      "rmse_uv": 0.015176859766865454
+    },
+    "real_quiet_double": {
+      "model": "mlp",
+      "condition": "real_quiet_double",
+      "guidance": 0.1,
+      "rmse_uv": 0.015192830717239593
+    }
+  },
+  "unet": {
+    "real_quiet_half": {
+      "model": "unet",
+      "condition": "real_quiet_half",
+      "guidance": 0.3,
+      "rmse_uv": 0.01573898369851505
+    },
+    "real_quiet_native": {
+      "model": "unet",
+      "condition": "real_quiet_native",
+      "guidance": 0.0,
+      "rmse_uv": 0.015767443239659354
+    },
+    "real_quiet_double": {
+      "model": "unet",
+      "condition": "real_quiet_double",
+      "guidance": 0.0,
+      "rmse_uv": 0.015767443239659354
+    }
+  }
+}

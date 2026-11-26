@@ -31,8 +31,8 @@ def generate_responses(count, seed):
         return np.exp(-0.5 * ((time_ms - center) / spread) ** 2)
 
     responses = amplitude * gaussian(latency, width)
-    responses -= amplitude * trough_amplitude * gaussian(
-        latency + trough_delay, trough_width
+    responses -= (
+        amplitude * trough_amplitude * gaussian(latency + trough_delay, trough_width)
     )
     responses += amplitude * early_amplitude * gaussian(early_latency, width * 0.65)
     responses[:, time_ms < 0] = 0
@@ -68,7 +68,9 @@ def main():
         amplitude_scale_uV=AMPLITUDE_SCALE_UV,
     )
     print(f"Saved {len(responses)} clean responses to {args.output}")
-    print(f"Zero responses: {is_zero.sum()}; multiply amplitudes by 0.1 for microvolts.")
+    print(
+        f"Zero responses: {is_zero.sum()}; multiply amplitudes by 0.1 for microvolts."
+    )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,37 @@
+[
+  {
+    "figure": "01_before_after",
+    "title": "The matched-budget result",
+    "explanation": "Mean per-ABR RMSE, averaged equally across 0.05, 0.20 and 0.50 \u00b5V noise levels. Each ABR estimate is the mean of 32 samples. Both models trained for 4,000 updates using the same MLP trajectory. Lower is better."
+  },
+  {
+    "figure": "02_components",
+    "title": "What changed",
+    "explanation": "The faster EMA and then the measurement correction are shown in sequence. The EMA shadows followed the same training updates. Guidance tuning selected the original MLP guidance values, so it made no additional change to this result."
+  },
+  {
+    "figure": "03_noise_levels",
+    "title": "Across noise levels",
+    "explanation": "The same 12 reference ABRs and corresponding simulated recordings are used for both methods at each noise level. The noise is white and its standard deviation is assumed known."
+  },
+  {
+    "figure": "04_paired_cases",
+    "title": "Individual paired reconstructions",
+    "explanation": "Each thin line is one reference ABR: teal means its error decreased and orange means it increased. The dark line connects means. The same 12 waveforms appear in all panels; they are not 36 independent participants."
+  },
+  {
+    "figure": "05_longer_training",
+    "title": "What happened by 50,000 updates",
+    "explanation": "This is validation RMSE, using eight-sample averages on six validation waveforms; it is not the 32-sample test RMSE shown above. The two curves follow the same model trajectory. One training seed and a small validation set do not establish population-level behavior."
+  },
+  {
+    "figure": "06_50k_test",
+    "title": "The 50k follow-up",
+    "explanation": "This fresh holdout differs from the 4k experiment\u2019s holdout, so its values should not be compared across those figures as if they used identical recordings. The 4k checkpoint and EMA were selected on validation data; the correction strength was also selected before test scoring."
+  },
+  {
+    "figure": "07_waveforms",
+    "title": "What two reconstructions look like",
+    "explanation": "The first held-out reference waveform is shown at two noise levels, selected by fixed index rather than quality. The same reference and EEG are supplied to each method. These examples do not summarize all cases."
+  }
+]

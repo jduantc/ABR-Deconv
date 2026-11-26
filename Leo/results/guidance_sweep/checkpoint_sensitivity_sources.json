@@ -1,0 +1,10 @@
+[
+  {
+    "path": "/home/leki/Caltech/Year 4/CS163/ABR-Deconv-publish/Leo/runs/phoom_long_50k/mlp/step_4000_ema_0.005.pt",
+    "sha256": "70652017daa8091845d4a224bd3b074e1c7752b251309dd384f3dcbbea15bd78"
+  },
+  {
+    "path": "/home/leki/Caltech/Year 4/CS163/ABR-Deconv-publish/Leo/runs/phoom_matched_10m/step_500000_ema_0.005.pt",
+    "sha256": "b8cac5b4a0ab23cc624d959fdf55a72075ba2a1fed3150f68bea6ad336ab33d0"
+  }
+]

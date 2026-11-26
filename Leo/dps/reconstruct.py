@@ -1,4 +1,4 @@
-"""Reconstruct an ABRR from EEG using DPS"""
+"""Reconstruct an ABR from EEG using DPS"""
 
 import sys
 from pathlib import Path
@@ -9,14 +9,14 @@ import torch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from data import WAVEFORM_LENGTH
 from diffusion import clean_from_v, cosine_schedule
-from model import Denoiser
+from model import make_model
 
 
 def stimulus_matrix(pulses, response_length=WAVEFORM_LENGTH, onset_index=50):
     """Use the pulse timings to turn one ABR into an EEG signal."""
     pulses = torch.as_tensor(pulses, dtype=torch.float32)
     if pulses.ndim != 1 or len(pulses) == 0:
-        raise ValueError("pulses must be a nonempty one-ddimensional array")
+        raise ValueError("pulses must be a nonempty one-dimensional array")
     # Our ABR starts 50 samples before the pulse, so keep that offset here.
     eeg_times = torch.arange(len(pulses))[:, None]
     abr_times = torch.arange(response_length)[None, :] - onset_index
@@ -27,7 +27,7 @@ def stimulus_matrix(pulses, response_length=WAVEFORM_LENGTH, onset_index=50):
 
 def load_model(checkpoint_path):
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
-    model = Denoiser()
+    model = make_model(checkpoint.get("architecture", "mlp"))
     model.load_state_dict(checkpoint["model"])
     model.eval()
     for parameter in model.parameters():
@@ -35,14 +35,14 @@ def load_model(checkpoint_path):
     return model
 
 
-def reconstruct(model, eeg, pulses, noise_std, guidance=0.1, seed=1):
+def reconstruct(model, eeg, pulses, *, guidance=0.1, seed=1):
     """Start with some noise and use the EEG to guide the ABR reconstruction
 
-    EEG and noise_std must be in the model's amplitude unit
-    The pulse train contains event weights, not EEG voltaages.
+    EEG must be in the model's amplitude unit.
+    The pulse train contains event weights, not EEG voltages.
     """
-    if noise_std <= 0 or guidance < 0:
-        raise ValueError("noise_std must be positive and guidance nonnegative")
+    if guidance < 0:
+        raise ValueError("guidance must be nonnegative")
     eeg = torch.as_tensor(eeg, dtype=torch.float32)
     matrix = stimulus_matrix(pulses)
     if eeg.ndim != 1 or len(eeg) != len(matrix):
@@ -59,7 +59,7 @@ def reconstruct(model, eeg, pulses, noise_std, guidance=0.1, seed=1):
         predicted_eeg = matrix @ clean[0]
 
         # See how well this ABR explains the EEG, then get a direction to fix it
-        residual = (eeg - predicted_eeg) / noise_std
+        residual = eeg - predicted_eeg
         loss = torch.linalg.vector_norm(residual) / np.sqrt(len(eeg))
         gradient = torch.autograd.grad(loss, current)[0]
 

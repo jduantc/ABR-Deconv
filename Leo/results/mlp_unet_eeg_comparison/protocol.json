@@ -1,0 +1,37 @@
+{
+  "checkpoint_sources": {
+    "mlp": {
+      "path": "/home/leki/Caltech/Year 4/CS163/ABR-Deconv-publish/Leo/runs/mlp_unet_2m/mlp/lr_2e-04/last.pt",
+      "sha256": "b2b8ed8676942a4d4ca93d4765fada856ba8024c45bac4ed76d43430307df901"
+    },
+    "unet": {
+      "path": "/home/leki/Caltech/Year 4/CS163/ABR-Deconv-publish/Leo/runs/mlp_unet_2m/unet/lr_4e-04/last.pt",
+      "sha256": "6e6ef3bd56fc8ecb0d2f245176bb7cd4490d87728b549e62e8d8cdd3e635b1e1"
+    }
+  },
+  "validation_subject": "sub-exp302",
+  "test_subject": "sub-exp303",
+  "validation_count": 8,
+  "test_count": 10,
+  "validation_wave_seed": 98531,
+  "test_wave_seed": 98532,
+  "guidance_grid": [
+    0.0,
+    0.1,
+    0.3,
+    1.0,
+    3.0,
+    6.25,
+    12.0
+  ],
+  "validation_draws": 4,
+  "test_draws": 16,
+  "validation_sampling_seed": 881,
+  "test_sampling_seed": 991,
+  "conditions": [
+    "real_quiet_half",
+    "real_quiet_native",
+    "real_quiet_double"
+  ],
+  "note": "New data is known synthetic ABR + real pulse times + pre-playback EEG; 9 nonzero and 1 null target. Real speech EEG has no true ABR; its exploratory reconstruction has no RMSE."
+}

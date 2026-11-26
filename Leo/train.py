@@ -11,7 +11,7 @@ import torch
 
 from data import AMPLITUDE_SCALE_UV, ROOT, WAVEFORM_LENGTH, generate_responses
 from diffusion import DIFFUSION_STEPS, cosine_schedule, make_training_pair
-from model import Denoiser
+from model import make_model
 
 
 def train(args):
@@ -30,7 +30,9 @@ def train(args):
     output = args.output or ROOT / "runs" / str(args.seed)
     output.mkdir(parents=True, exist_ok=True)
     if (output / "model.pt").exists() or (output / "losses.csv").exists():
-        raise FileExistsError(f"Choose a new --output folder; {output} already has a run.")
+        raise FileExistsError(
+            f"Choose a new --output folder; {output} already has a run."
+        )
 
     settings = {
         "seed": args.seed,
@@ -48,11 +50,15 @@ def train(args):
         "amplitude_scale_uV": AMPLITUDE_SCALE_UV,
         "device": str(device),
         "data_file": str(args.data.resolve()),
+        "architecture": args.architecture,
+        "checkpoints": args.checkpoints,
     }
-    (output / "settings.json").write_text(json.dumps(settings, indent=2), encoding="utf-8")
+    (output / "settings.json").write_text(
+        json.dumps(settings, indent=2), encoding="utf-8"
+    )
 
     clean_training = torch.tensor(training, device=device)
-    model = Denoiser().to(device)
+    model = make_model(args.architecture).to(device)
     ema_model = copy.deepcopy(model).eval()
     optimizer = torch.optim.AdamW(model.parameters(), lr=2e-4, weight_decay=1e-4)
     alpha_bar = cosine_schedule().to(device)
@@ -71,12 +77,19 @@ def train(args):
 
     best_loss = float("inf")
     recent_losses = []
-    print(f"Training on {device}: {len(training)} waveforms, {args.steps} updates.", flush=True)
+    print(
+        f"Training on {device}: {len(training)} waveforms, {args.steps} updates.",
+        flush=True,
+    )
     with (output / "losses.csv").open("w", newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(file, fieldnames=["step", "training_v_mse", "validation_v_mse"])
+        writer = csv.DictWriter(
+            file, fieldnames=["step", "training_v_mse", "validation_v_mse"]
+        )
         writer.writeheader()
         for step in range(1, args.steps + 1):
-            indices = torch.randint(len(clean_training), (args.batch_size,), device=device)
+            indices = torch.randint(
+                len(clean_training), (args.batch_size,), device=device
+            )
             clean = clean_training[indices]
             timesteps = torch.randint(DIFFUSION_STEPS, (len(clean),), device=device)
             noise = torch.randn_like(clean)
@@ -91,14 +104,29 @@ def train(args):
 
             # EMA weights provide a smoother copy for validation and saving.
             with torch.no_grad():
-                for ema_parameter, parameter in zip(ema_model.parameters(), model.parameters()):
+                for ema_parameter, parameter in zip(
+                    ema_model.parameters(), model.parameters()
+                ):
                     ema_parameter.lerp_(parameter, 0.005)
             recent_losses.append(loss.item())
+
+            if step in args.checkpoints:
+                torch.save(
+                    {
+                        "model": ema_model.state_dict(),
+                        "step": step,
+                        "architecture": args.architecture,
+                        "config": settings,
+                    },
+                    output / f"step_{step}.pt",
+                )
 
             if step % args.log_every == 0 or step == args.steps:
                 with torch.no_grad():
                     predicted = ema_model(validation_input, validation_steps)
-                    validation_loss = (predicted - validation_target).square().mean().item()
+                    validation_loss = (
+                        (predicted - validation_target).square().mean().item()
+                    )
                 row = {
                     "step": step,
                     "training_v_mse": sum(recent_losses) / len(recent_losses),
@@ -108,18 +136,23 @@ def train(args):
                 file.flush()
                 print(
                     f"Step {step}: train={row['training_v_mse']:.5f}, "
-                    f"validation={validation_loss:.5f}", flush=True
+                    f"validation={validation_loss:.5f}",
+                    flush=True,
                 )
                 recent_losses.clear()
                 if validation_loss < best_loss:
                     best_loss = validation_loss
-                    torch.save({
-                        "model": ema_model.state_dict(),
-                        "step": step,
-                        "seed": args.seed,
-                        "validation_v_mse": validation_loss,
-                        "config": settings,
-                    }, output / "model.pt")
+                    torch.save(
+                        {
+                            "model": ema_model.state_dict(),
+                            "step": step,
+                            "seed": args.seed,
+                            "validation_v_mse": validation_loss,
+                            "config": settings,
+                            "architecture": args.architecture,
+                        },
+                        output / "model.pt",
+                    )
 
     print(f"Saved best EMA model and training log in {output}", flush=True)
 
@@ -133,11 +166,24 @@ def main():
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--validation-size", type=int, default=512)
     parser.add_argument("--log-every", type=int, default=200)
-    parser.add_argument("--device", choices=["cpu", "cuda"],
-                        default="cuda" if torch.cuda.is_available() else "cpu")
+    parser.add_argument("--architecture", choices=["mlp", "cnn", "unet"], default="mlp")
+    parser.add_argument(
+        "--checkpoints",
+        type=int,
+        nargs="*",
+        default=[],
+        help="Also save EMA weights at these update counts",
+    )
+    parser.add_argument(
+        "--device",
+        choices=["cpu", "cuda"],
+        default="cuda" if torch.cuda.is_available() else "cpu",
+    )
     args = parser.parse_args()
     if min(args.steps, args.batch_size, args.validation_size, args.log_every) < 1:
         parser.error("Step counts, batch size, and validation size must be positive.")
+    if any(s < 1 or s > args.steps for s in args.checkpoints):
+        parser.error("Checkpoints must fall between 1 and --steps.")
     if not args.data.exists():
         parser.error(f"Training data not found: {args.data}. Run python data.py first.")
     train(args)

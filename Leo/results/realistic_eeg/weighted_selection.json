@@ -1,0 +1,7 @@
+{
+  "guidance": 0.0,
+  "validation_rmse_uv": 0.01909742950044654,
+  "noise_source": "only validation subject exp302 quiet EEG",
+  "definition": "inverse square root validation PSD with 10th percentile band floor; unit RMS weight within 30\u20132000 Hz; outside-band weights zero",
+  "note": "accounts for spectral noise shape; does not use the test noise SD or test truth for tuning"
+}
