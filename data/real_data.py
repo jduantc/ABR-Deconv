@@ -27,8 +27,8 @@ import torch
 from scipy.signal import butter, iirnotch, lfilter, sosfilt
 
 import diffusion as dm
-import real_prior
-from sim import FS, LAG0, LAGS_MS, NK, wave_v
+import data.real_prior as real_prior
+from data.sim import FS, LAG0, LAGS_MS, NK, wave_v
 
 HERE = Path(__file__).parent
 DATA = HERE / "data" / "ds008065"        # symlink or copy of the OpenNeuro download

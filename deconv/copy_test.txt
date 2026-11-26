@@ -1,0 +1,125 @@
+"""
+Documentation for midterm assessment
+This file doesn't run on its own, only includes the 
+selected commenting function (deconv_wiener) + the imports
+"""
+
+import numpy as np
+import pandas as pd
+import mne 
+import os
+from expyfun.io import read_hdf5
+
+from scipy.fftpack import fft, ifft
+from scipy.signal import sosfilt, sosfilt_zi, butter, lfilter, iirnotch
+import pathlib
+from expyfun import binary_to_decimals
+
+n_subs = 1
+eeg_freq = 1e4
+SUBJECTS = np.arange(1, n_subs + 1)
+EARS = ["left", "right"]
+tmin, tmax = -1, 1
+n_pre, n_post = int(round(-tmin * eeg_freq)), int(round(tmax * eeg_freq))
+
+l_freq = 30
+h_freq = 2000
+notches = np.arange(60, h_freq, 120)
+notch_width = 5
+b, a = butter(1, [l_freq, h_freq], 'bandpass', fs=eeg_freq)
+b, a = [b], [a]
+
+for notch_freq in notches:
+    bn, an = iirnotch(notch_freq, notch_freq / notch_width, fs=eeg_freq)
+    b.append(bn)
+    a.append(an)
+sos = np.array((b, a)).transpose(1, 0, 2).reshape(-1, 6)
+
+
+def deconv_wiener(c, cf, y, alpha, snr_exp=2):
+    """
+    My implementation of the deconvolution function, contains the 
+    adapted code from the original repo + customizable Wiener options
+    with choices for the alpha coefficient and snr_exponent
+    (this assumes SNR = 1/omega^n for some n). 
+
+    Setting alpha=0 should recover the naive deconv.
+    """
+    # basic exception handling for proper choices of alpha
+    if not np.isfinite(alpha) or alpha < 0:
+        raise ValueError("alpha must be finite and nonnegative.") 
+
+    # get automatic fast fourier length from the mne package
+    n = mne.filter.next_fast_len(c.shape[-1])
+
+    # convert all relevant terms to Fourier domain, each term is also labeled
+    c_f = fft(c, n=n) # real pulse train
+    cf_f = fft(cf, n=n) # "fake" pulse trains, already contained in dataset
+    # these trains are used to estimate a common component to subtract out later
+
+    y_f = fft(y, n=n) # observed eeg
+    y_f[..., 0] = 0 # removes the constant offset, I believe this is just
+    # standard practice for EEG (we only look at the frequency variations)
+
+    tr_weights = 1. / np.var(y, axis=-1, keepdims=True) # weight the trials
+    # by inverse variance so that highly unstable trials are weighed down
+
+    tr_weights /= tr_weights.sum(axis=0, keepdims=True) # normalize
+
+    theta = 2.0 * np.pi * np.fft.fftfreq(n) # frequency bins for the fft
+    # (in radians, but can also be formulated in terms of something physical like Hz)
+
+    # this is the 1/SNR(omega) that we add to the denominator
+    reg = alpha * np.abs(theta)**(snr_exp)
+
+    # same numerator as used in naive deconvolution: aggregate over trials
+    # using inv. variance, sum over axis 0 (electrode derivations, i.e. left vs right)
+    numerator = (np.conj(c_f) * y_f * tr_weights).sum(axis=0)
+    # denominator is a scalar that essentially sums over the power of the pulse trains
+    # this is like dividing Y/C in the naive deconv. example from the lecture slides, but 
+    # the denominator is pooled over trials for stability, and there is a np.conj(c_f) that is also
+    # present in the numerator
+    denominator = (
+        c_f * np.conj(c_f)
+    ).mean(axis=(0, 1, 2), keepdims=True)[0]
+
+    # same formulation but for the fake pulse trains, so we can
+    # subtract out the common component later
+    numerator_c = (np.conj(cf_f) * y_f * tr_weights).sum(axis=0)
+    denominator_c = (
+        cf_f * np.conj(cf_f)
+    ).mean(axis=(0, 1, 2), keepdims=True)[0]
+
+    # divide through, including the regularization term
+    m = numerator / (denominator + reg)
+    mf = numerator_c / (denominator_c + reg)
+
+    # recover the x for both the real and fake train, 
+    # multiply by 1e6 for the V -> (mu)V conversion, 
+    # take the real in case of small imaginary residuals from ifft
+    x_bands = 1e6 * ifft(m).real
+    x_fake = 1e6 * ifft(mf).real
+
+    # do some postprocessing to align the lag axis properly
+    # (we use predetermined n_pre: lag samples before pulse onset, n_post: samples after)
+    x_bands = np.concatenate(
+        (x_bands[..., -n_pre:], x_bands[..., :n_post]), axis=-1
+    ).mean(2) # the mean averages over trials to form one ABR per frequency band from the whole collection
+
+    # same procedure applied to fake pulse train
+    x_fake = np.concatenate(
+        (x_fake[..., -n_pre:], x_fake[..., :n_post]), axis=-1
+    ).mean(2)
+
+    # average over the fake pulse trains to estimate the whole "common component"
+    common_comp = x_fake.mean(1, keepdims=True)
+
+    # for the isolated tensor containing all the band abrs,
+    # just subtract the common_comp once
+    x_isol = x_bands - common_comp
+    # for one full abr aggregating all the bands,
+    # use the already subtracted x_isol, sum the bands, then add the common_comp back
+    # (so you don't over-correct the common comp)
+    x_combined = x_isol.sum(1) + common_comp[:, 0, :]
+
+    return x_isol, x_combined

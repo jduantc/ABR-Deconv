@@ -1,9 +1,0 @@
-numpy
-scipy
-matplotlib
-torch
-h5py
-pandas
-mne
-praat-parselmouth
-wandb
